@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import SupportedTools from "@/components/SupportedTools";
 import HowItWorks from "@/components/HowItWorks";
-import SpendVisibility from "@/components/SpendVisibility";
+import AuditForm from "@/components/AuditForm";
 import SocialProof from "@/components/SocialProof";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
@@ -16,7 +16,7 @@ export default function Home() {
         <Hero />
         <SupportedTools />
         <HowItWorks />
-        <SpendVisibility />
+        <AuditForm />
         <SocialProof />
         <FAQ />
         <CTA />
