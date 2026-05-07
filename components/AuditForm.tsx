@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { AuditFormData, ToolEntry as ToolEntryType, DEFAULT_AUDIT_DATA } from "@/lib/types";
 import { getStoredAuditData, saveAuditData } from "@/lib/storage";
 import { TEAM_SIZES, USE_CASES } from "@/lib/constants";
+import { generateRecommendations, Recommendation } from "@/lib/recommendations";
 import ToolEntry from "./ToolEntry";
+import RecommendationHint from "./RecommendationHint";
 
 // Simple ID generator
 function generateId(): string {
@@ -14,6 +16,7 @@ function generateId(): string {
 export default function AuditForm() {
   const [formData, setFormData] = useState<AuditFormData>(DEFAULT_AUDIT_DATA);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -26,6 +29,9 @@ export default function AuditForm() {
   useEffect(() => {
     if (isLoaded) {
       saveAuditData(formData);
+      // Generate recommendations
+      const recs = generateRecommendations(formData);
+      setRecommendations(recs);
     }
   }, [formData, isLoaded]);
 
@@ -95,10 +101,10 @@ export default function AuditForm() {
   }
 
   return (
-    <section className="py-24 px-gutter bg-surface-container-low border-y border-outline-variant/20">
-      <div className="max-w-container-max mx-auto grid lg:grid-cols-3 gap-2xl">
+    <section id="audit-form-section" className="py-32 px-gutter bg-surface-container-low border-y border-outline-variant/20">
+      <div className="max-w-container-max mx-auto grid lg:grid-cols-3 gap-3xl">
         {/* Left Column - Summary */}
-        <div className="lg:col-span-1 space-y-lg">
+        <div className="lg:col-span-1 space-y-3xl">
           <div>
             <h3 className="font-h3 font-bold mb-md">Audit Summary</h3>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -107,59 +113,123 @@ export default function AuditForm() {
           </div>
 
           {/* Summary Cards */}
-          <div className="space-y-md">
-            <div className="bg-surface rounded-lg p-lg border border-outline-variant/50">
-              <p className="text-label-caps text-on-surface-variant font-bold mb-sm">
+          <div className="space-y-xl">
+            {/* Total Monthly Spend Card */}
+            <div className="bg-surface rounded-lg p-2xl border border-outline-variant/50 hover:border-primary/30 transition-all hover:shadow-md">
+              <p className="text-label-caps text-on-surface-variant font-bold mb-lg">
                 TOTAL MONTHLY SPEND
               </p>
-              <p className="text-h1 font-black text-primary">
-                ${totalMonthlySpend.toFixed(2)}
-              </p>
+              <div className="space-y-md">
+                <p className="text-4xl font-black text-primary">
+                  ${totalMonthlySpend.toFixed(2)}
+                </p>
+                <div className="pt-md border-t border-outline-variant/30 space-y-xs">
+                  <p className="text-xs text-on-surface-variant">
+                    {formData.tools.length} tool{formData.tools.length !== 1 ? "s" : ""} tracked
+                  </p>
+                  {totalMonthlySpend > 0 && (
+                    <p className="text-xs font-semibold text-primary">
+                      ${(totalMonthlySpend * 12).toFixed(2)}/year
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="bg-surface rounded-lg p-lg border border-outline-variant/50">
-              <p className="text-label-caps text-on-surface-variant font-bold mb-sm">
+            {/* Total Seats Card */}
+            <div className="bg-surface rounded-lg p-2xl border border-outline-variant/50 hover:border-primary/30 transition-all hover:shadow-md">
+              <p className="text-label-caps text-on-surface-variant font-bold mb-lg">
                 TOTAL SEATS
               </p>
-              <p className="text-h1 font-black text-on-surface">
-                {totalSeats}
-              </p>
+              <div className="space-y-md">
+                <p className="text-4xl font-black text-on-surface">
+                  {totalSeats}
+                </p>
+                <div className="pt-md border-t border-outline-variant/30">
+                  <p className="text-xs text-on-surface-variant">
+                    Across all tools
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="bg-surface rounded-lg p-lg border border-outline-variant/50">
-              <p className="text-label-caps text-on-surface-variant font-bold mb-sm">
+            {/* Tools Added Card */}
+            <div className="bg-surface rounded-lg p-2xl border border-outline-variant/50 hover:border-primary/30 transition-all hover:shadow-md">
+              <p className="text-label-caps text-on-surface-variant font-bold mb-lg">
                 TOOLS ADDED
               </p>
-              <p className="text-h1 font-black text-on-surface">
-                {formData.tools.length}
-              </p>
+              <div className="space-y-md">
+                <p className="text-4xl font-black text-on-surface">
+                  {formData.tools.length}
+                </p>
+                <div className="pt-md border-t border-outline-variant/30">
+                  <p className="text-xs text-on-surface-variant">
+                    {formData.tools.length === 0
+                      ? "Add your first tool to get started"
+                      : "Click 'Add Another Tool' to expand"}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Info Box */}
-          <div className="bg-primary/10 border border-primary/20 rounded-lg p-lg">
-            <p className="text-body-sm font-semibold text-primary">
-              💡 Tip: Add all your AI tools to get the most accurate audit recommendations.
-            </p>
+          {/* Persistence Notice - Enhanced */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-2xl">
+            <div className="flex items-start gap-md">
+              <span className="material-symbols-outlined text-sm text-primary flex-shrink-0 mt-0.5">
+                lock
+              </span>
+              <div className="space-y-xs">
+                <p className="text-body-sm font-semibold text-primary">
+                  🔒 Data Saved Locally
+                </p>
+                <p className="text-xs text-primary/80 leading-relaxed">
+                  Your audit data is encrypted and saved to your browser. It never leaves your device until you submit.
+                </p>
+              </div>
+            </div>
           </div>
+
+          {/* Recommendations Preview */}
+          {recommendations.length > 0 && (
+            <div className="space-y-lg">
+              <div>
+                <p className="text-label-caps font-bold text-on-surface-variant mb-md">
+                  💡 EARLY INSIGHTS
+                </p>
+                <p className="text-xs text-on-surface-variant">
+                  Based on your current setup
+                </p>
+              </div>
+              <div className="space-y-md">
+                {recommendations.slice(0, 2).map((rec, idx) => (
+                  <RecommendationHint
+                    key={idx}
+                    message={rec.message}
+                    type={rec.type}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column - Form */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="space-y-lg">
+          <form onSubmit={handleSubmit} className="space-y-3xl">
             {/* Tools Section */}
-            <div className="bg-surface-container-lowest p-xl rounded-lg border-2 border-outline-variant">
-              <div className="mb-lg border-b border-outline-variant pb-md">
-                <h3 className="font-h3 font-bold">Your AI Tools</h3>
+            <div className="bg-surface-container-lowest p-3xl rounded-lg border-2 border-outline-variant space-y-2xl">
+              <div>
+                <h3 className="font-h3 font-bold mb-md">Your AI Tools</h3>
                 <p className="text-xs text-outline font-medium">
                   Add each tool your team uses with its current plan and spending.
                 </p>
               </div>
 
-              <div className="space-y-md">
+              <div className="space-y-xl">
                 {formData.tools.length === 0 ? (
-                  <div className="text-center py-12 bg-surface-container-low rounded-lg border border-dashed border-outline-variant/50">
-                    <span className="material-symbols-outlined text-4xl text-outline mb-md block">
+                  <div className="text-center py-20 bg-surface-container-low rounded-lg border border-dashed border-outline-variant/50">
+                    <span className="material-symbols-outlined text-6xl text-outline mb-lg block">
                       add_circle
                     </span>
                     <p className="text-body-sm text-on-surface-variant font-medium">
@@ -167,7 +237,7 @@ export default function AuditForm() {
                     </p>
                   </div>
                 ) : (
-                  formData.tools.map((tool, index) => (
+                  formData.tools.map((tool) => (
                     <ToolEntry
                       key={tool.id}
                       entry={tool}
@@ -181,7 +251,7 @@ export default function AuditForm() {
                 <button
                   type="button"
                   onClick={addTool}
-                  className="w-full flex items-center justify-center gap-sm font-label-caps text-primary border border-primary/20 bg-primary/5 py-sm rounded hover:bg-primary/10 transition-colors"
+                  className="w-full flex items-center justify-center gap-sm font-label-caps text-primary border border-primary/20 bg-primary/5 py-md rounded hover:bg-primary/10 transition-colors"
                 >
                   <span className="material-symbols-outlined text-sm">add</span>
                   Add Another Tool
@@ -190,7 +260,7 @@ export default function AuditForm() {
             </div>
 
             {/* Global Fields Section */}
-            <div className="bg-surface-container-lowest p-xl rounded-lg border-2 border-outline-variant space-y-lg">
+            <div className="bg-surface-container-lowest p-3xl rounded-lg border-2 border-outline-variant space-y-2xl">
               <div>
                 <h3 className="font-h3 font-bold mb-md">Team Information</h3>
                 <p className="text-xs text-outline font-medium">
@@ -198,42 +268,44 @@ export default function AuditForm() {
                 </p>
               </div>
 
-              {/* Team Size */}
-              <div className="space-y-xs">
-                <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider">
-                  Team Size
-                </label>
-                <select
-                  value={formData.teamSize}
-                  onChange={(e) => handleTeamSizeChange(e.target.value)}
-                  className="w-full bg-surface border border-outline-variant rounded px-sm py-2 text-sm focus:ring-1 focus:ring-primary outline-none"
-                >
-                  <option value="">Select team size...</option>
-                  {TEAM_SIZES.map((size) => (
-                    <option key={size.value} value={size.value}>
-                      {size.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="space-y-2xl">
+                {/* Team Size */}
+                <div className="space-y-md">
+                  <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider">
+                    Team Size
+                  </label>
+                  <select
+                    value={formData.teamSize}
+                    onChange={(e) => handleTeamSizeChange(e.target.value)}
+                    className="w-full bg-surface border border-outline-variant rounded px-md py-md text-sm focus:ring-1 focus:ring-primary outline-none transition-colors hover:border-outline-variant/70"
+                  >
+                    <option value="">Select team size...</option>
+                    {TEAM_SIZES.map((size) => (
+                      <option key={size.value} value={size.value}>
+                        {size.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              {/* Use Case */}
-              <div className="space-y-xs">
-                <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider">
-                  Primary Use Case
-                </label>
-                <select
-                  value={formData.useCase}
-                  onChange={(e) => handleUseCaseChange(e.target.value)}
-                  className="w-full bg-surface border border-outline-variant rounded px-sm py-2 text-sm focus:ring-1 focus:ring-primary outline-none"
-                >
-                  <option value="">Select use case...</option>
-                  {USE_CASES.map((useCase) => (
-                    <option key={useCase.value} value={useCase.value}>
-                      {useCase.label}
-                    </option>
-                  ))}
-                </select>
+                {/* Use Case */}
+                <div className="space-y-md">
+                  <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-wider">
+                    Primary Use Case
+                  </label>
+                  <select
+                    value={formData.useCase}
+                    onChange={(e) => handleUseCaseChange(e.target.value)}
+                    className="w-full bg-surface border border-outline-variant rounded px-md py-md text-sm focus:ring-1 focus:ring-primary outline-none transition-colors hover:border-outline-variant/70"
+                  >
+                    <option value="">Select use case...</option>
+                    {USE_CASES.map((useCase) => (
+                      <option key={useCase.value} value={useCase.value}>
+                        {useCase.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -241,14 +313,15 @@ export default function AuditForm() {
             <div className="flex gap-md">
               <button
                 type="submit"
-                className="flex-1 bg-primary text-on-primary font-bold text-h3 py-md rounded shadow-lg hover:brightness-110 active:scale-95 transition-all"
+                className="flex-1 bg-primary text-on-primary font-bold text-h3 py-lg rounded shadow-lg hover:brightness-110 active:scale-95 transition-all"
               >
                 Generate Audit Report
               </button>
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-lg py-md border border-outline-variant text-on-surface font-bold rounded hover:bg-surface-container transition-colors"
+                className="px-lg py-lg border border-outline-variant text-on-surface font-bold rounded hover:bg-surface-container transition-colors"
+                title="Reset form"
               >
                 <span className="material-symbols-outlined">refresh</span>
               </button>

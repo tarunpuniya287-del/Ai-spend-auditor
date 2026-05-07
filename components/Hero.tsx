@@ -1,4 +1,13 @@
+"use client";
+
 export default function Hero() {
+  const handleScrollToForm = () => {
+    const formElement = document.getElementById("audit-form-section");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section className="relative overflow-hidden pt-20 pb-20 px-gutter">
       <div className="max-w-container-max mx-auto grid lg:grid-cols-2 gap-2xl items-center">
@@ -17,7 +26,10 @@ export default function Hero() {
           </p>
 
           <div className="space-y-sm">
-            <button className="bg-primary text-on-primary font-h3 text-h3 px-xl py-md rounded shadow-xl hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto">
+            <button
+              onClick={handleScrollToForm}
+              className="bg-primary text-on-primary font-h3 text-h3 px-xl py-md rounded shadow-xl hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto"
+            >
               Run Free Audit
             </button>
             <p className="text-xs text-outline font-medium">
