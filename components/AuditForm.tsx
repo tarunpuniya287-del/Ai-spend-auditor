@@ -5,8 +5,10 @@ import { AuditFormData, ToolEntry as ToolEntryType, DEFAULT_AUDIT_DATA } from "@
 import { getStoredAuditData, saveAuditData } from "@/lib/storage";
 import { TEAM_SIZES, USE_CASES } from "@/lib/constants";
 import { generateRecommendations, Recommendation } from "@/lib/recommendations";
+import { generateAudit, validateAuditData, AuditReport } from "@/lib/audit/generate-audit";
 import ToolEntry from "./ToolEntry";
 import RecommendationHint from "./RecommendationHint";
+import AuditResults from "./AuditResults";
 
 // Simple ID generator
 function generateId(): string {
@@ -17,6 +19,9 @@ export default function AuditForm() {
   const [formData, setFormData] = useState<AuditFormData>(DEFAULT_AUDIT_DATA);
   const [isLoaded, setIsLoaded] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [auditReport, setAuditReport] = useState<AuditReport | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -81,12 +86,35 @@ export default function AuditForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // TODO: Send to backend for audit generation
+    setError(null);
+    setIsGenerating(true);
+
+    try {
+      // Validate form data
+      const validation = validateAuditData(formData);
+      if (!validation.valid) {
+        setError(validation.errors.join(", "));
+        setIsGenerating(false);
+        return;
+      }
+
+      // Generate audit report
+      const report = generateAudit(formData);
+      setAuditReport(report);
+      console.log("Audit Report Generated:", report);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate audit report";
+      setError(errorMessage);
+      console.error("Audit generation error:", err);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleReset = () => {
     setFormData(DEFAULT_AUDIT_DATA);
+    setAuditReport(null);
+    setError(null);
   };
 
   // Calculate totals for display
@@ -98,6 +126,17 @@ export default function AuditForm() {
 
   if (!isLoaded) {
     return <div className="text-center py-12">Loading...</div>;
+  }
+
+  // Show audit results if report is generated
+  if (auditReport) {
+    return (
+      <section id="audit-form-section" className="py-32 px-gutter bg-surface-container-low border-y border-outline-variant/20">
+        <div className="max-w-container-max mx-auto">
+          <AuditResults report={auditReport} onReset={handleReset} />
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -313,9 +352,10 @@ export default function AuditForm() {
             <div className="flex gap-md">
               <button
                 type="submit"
-                className="flex-1 bg-primary text-on-primary font-bold text-h3 py-lg rounded shadow-lg hover:brightness-110 active:scale-95 transition-all"
+                disabled={isGenerating}
+                className="flex-1 bg-primary text-on-primary font-bold text-h3 py-lg rounded shadow-lg hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Generate Audit Report
+                {isGenerating ? "Generating..." : "Generate Audit Report"}
               </button>
               <button
                 type="button"
@@ -326,6 +366,13 @@ export default function AuditForm() {
                 <span className="material-symbols-outlined">refresh</span>
               </button>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-2xl">
+                <p className="text-sm text-red-800 font-semibold">Error: {error}</p>
+              </div>
+            )}
 
             {/* Info Text */}
             <p className="text-center text-xs text-outline font-medium">
