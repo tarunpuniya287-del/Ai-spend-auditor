@@ -41,6 +41,7 @@ export interface AuditReport {
   };
   savings: SavingsCalculation;
   recommendations: string[];
+  insights: string[];
 }
 
 /**
@@ -71,6 +72,9 @@ export function generateAudit(data: AuditFormData): AuditReport {
   // Generate recommendations
   const recommendations = generateRecommendations(findings, data);
 
+  // Generate insights
+  const insights = generateInsights(data, findings, savings);
+
   // Calculate summary
   const totalMonthlySpend = data.tools.reduce((sum, tool) => sum + tool.spend, 0);
   const totalSeats = data.tools.reduce((sum, tool) => sum + tool.seats, 0);
@@ -94,6 +98,7 @@ export function generateAudit(data: AuditFormData): AuditReport {
     summary,
     savings,
     recommendations,
+    insights,
   };
 
   return report;
@@ -128,6 +133,75 @@ function generateRecommendations(findings: AuditFinding[], data: AuditFormData):
   }
 
   return recommendations;
+}
+
+/**
+ * Generate lightweight insights from audit data
+ */
+function generateInsights(data: AuditFormData, findings: AuditFinding[], savings: SavingsCalculation): string[] {
+  const insights: string[] = [];
+
+  // Insight 1: Overall spend analysis
+  const totalSpend = data.tools.reduce((sum, tool) => sum + tool.spend, 0);
+  if (totalSpend > 0) {
+    insights.push(`Your team is spending $${totalSpend.toFixed(2)}/month on AI tools, which totals $${(totalSpend * 12).toFixed(2)}/year.`);
+  }
+
+  // Insight 2: Tool diversity
+  if (data.tools.length === 1) {
+    insights.push("You're currently using a single AI tool. Diversifying could provide better coverage for different use cases.");
+  } else if (data.tools.length >= 5) {
+    insights.push(`You're using ${data.tools.length} different AI tools. Consider if all are actively used to avoid tool sprawl.`);
+  } else {
+    insights.push(`Your team has a balanced set of ${data.tools.length} AI tools for different use cases.`);
+  }
+
+  // Insight 3: Seat efficiency
+  const totalSeats = data.tools.reduce((sum, tool) => sum + tool.seats, 0);
+  const teamSizeMap: { [key: string]: number } = {
+    "1-5": 5,
+    "6-20": 20,
+    "21-50": 50,
+    "51-100": 100,
+    "100+": 150,
+  };
+
+  if (data.teamSize && teamSizeMap[data.teamSize]) {
+    const maxTeamSize = teamSizeMap[data.teamSize];
+    const seatUtilization = (maxTeamSize / totalSeats) * 100;
+    if (seatUtilization > 100) {
+      insights.push(`You have ${totalSeats} seats allocated for a ${data.teamSize} team, indicating good seat utilization.`);
+    } else if (seatUtilization < 50) {
+      insights.push(`You have ${totalSeats} seats for a ${data.teamSize} team. Consider optimizing seat allocation.`);
+    }
+  }
+
+  // Insight 4: Savings potential
+  if (savings.monthlyPotentialSavings > 0) {
+    insights.push(`Potential savings of $${savings.monthlyPotentialSavings.toFixed(2)}/month (${savings.savingsPercentage.toFixed(1)}%) identified through optimization.`);
+  } else {
+    insights.push("Your current setup appears well-optimized with minimal savings opportunities.");
+  }
+
+  // Insight 5: Use case alignment
+  if (data.useCase === "coding") {
+    const hasCopilot = data.tools.some((t) => t.tool === "GitHub Copilot");
+    if (hasCopilot) {
+      insights.push("Your development team has GitHub Copilot, which is excellent for code completion and productivity.");
+    } else {
+      insights.push("Your development team might benefit from GitHub Copilot for enhanced code completion.");
+    }
+  } else if (data.useCase === "mixed") {
+    insights.push("Your mixed-use team benefits from having multiple specialized tools for different tasks.");
+  }
+
+  // Insight 6: Critical issues
+  const criticalFindings = findings.filter((f) => f.severity === "critical");
+  if (criticalFindings.length > 0) {
+    insights.push(`${criticalFindings.length} critical issue(s) detected that should be addressed immediately.`);
+  }
+
+  return insights;
 }
 
 /**

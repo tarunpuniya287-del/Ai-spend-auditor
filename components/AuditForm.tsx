@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AuditFormData, ToolEntry as ToolEntryType, DEFAULT_AUDIT_DATA } from "@/lib/types";
-import { getStoredAuditData, saveAuditData } from "@/lib/storage";
+import { getStoredAuditData, saveAuditData, saveAuditReport } from "@/lib/storage";
 import { TEAM_SIZES, USE_CASES } from "@/lib/constants";
 import { generateRecommendations, Recommendation } from "@/lib/recommendations";
-import { generateAudit, validateAuditData, AuditReport } from "@/lib/audit/generate-audit";
+import { generateAudit, validateAuditData } from "@/lib/audit/generate-audit";
 import ToolEntry from "./ToolEntry";
 import RecommendationHint from "./RecommendationHint";
-import AuditResults from "./AuditResults";
 
 // Simple ID generator
 function generateId(): string {
@@ -16,10 +16,10 @@ function generateId(): string {
 }
 
 export default function AuditForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState<AuditFormData>(DEFAULT_AUDIT_DATA);
   const [isLoaded, setIsLoaded] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [auditReport, setAuditReport] = useState<AuditReport | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,20 +100,22 @@ export default function AuditForm() {
 
       // Generate audit report
       const report = generateAudit(formData);
-      setAuditReport(report);
-      console.log("Audit Report Generated:", report);
+      
+      // Save report to localStorage
+      saveAuditReport(report);
+      
+      // Redirect to results page
+      router.push(`/audit/${report.id}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to generate audit report";
       setError(errorMessage);
       console.error("Audit generation error:", err);
-    } finally {
       setIsGenerating(false);
     }
   };
 
   const handleReset = () => {
     setFormData(DEFAULT_AUDIT_DATA);
-    setAuditReport(null);
     setError(null);
   };
 
@@ -126,17 +128,6 @@ export default function AuditForm() {
 
   if (!isLoaded) {
     return <div className="text-center py-12">Loading...</div>;
-  }
-
-  // Show audit results if report is generated
-  if (auditReport) {
-    return (
-      <section id="audit-form-section" className="py-32 px-gutter bg-surface-container-low border-y border-outline-variant/20">
-        <div className="max-w-container-max mx-auto">
-          <AuditResults report={auditReport} onReset={handleReset} />
-        </div>
-      </section>
-    );
   }
 
   return (

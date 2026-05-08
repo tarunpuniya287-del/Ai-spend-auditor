@@ -41,8 +41,30 @@ export const OVERLAPPING_SUBSCRIPTIONS_RULE: AuditRule = {
   },
   recommendation: "Consider consolidating duplicate tools to reduce costs",
   potentialSavings: (data: AuditFormData) => {
-    // Placeholder: Calculate based on duplicate tools
-    return 0;
+    // Calculate savings from consolidating duplicate tools
+    // Find duplicate tools and sum their spend
+    const toolNames = data.tools.map((t) => t.tool);
+    const duplicates = new Set<string>();
+    const seen = new Set<string>();
+    
+    toolNames.forEach((name) => {
+      if (seen.has(name)) {
+        duplicates.add(name);
+      }
+      seen.add(name);
+    });
+
+    // Sum spend of duplicate tools (keep one, eliminate others)
+    let savingsFromDuplicates = 0;
+    duplicates.forEach((toolName) => {
+      const toolEntries = data.tools.filter((t) => t.tool === toolName);
+      if (toolEntries.length > 1) {
+        // Keep the first one, eliminate the rest
+        savingsFromDuplicates += toolEntries.slice(1).reduce((sum, t) => sum + t.spend, 0);
+      }
+    });
+
+    return savingsFromDuplicates;
   },
 };
 
@@ -63,8 +85,18 @@ export const ENTERPRISE_OVERSIZING_RULE: AuditRule = {
   },
   recommendation: "Review plan options - enterprise plans may be oversized for your team",
   potentialSavings: (data: AuditFormData) => {
-    // Placeholder: Calculate based on enterprise tools
-    return 0;
+    // Estimate savings by downgrading enterprise to pro/standard tier
+    // Typical enterprise is 2-3x the cost of pro tier
+    const enterpriseTools = data.tools.filter((t) => t.plan.toLowerCase().includes("enterprise"));
+    
+    // Rough estimate: enterprise is ~3x pro tier cost
+    // So savings would be approximately 2/3 of the enterprise spend
+    const estimatedSavings = enterpriseTools.reduce((sum, tool) => {
+      // Assume enterprise is 3x the cost, so downgrading saves 2/3
+      return sum + (tool.spend * 2) / 3;
+    }, 0);
+
+    return estimatedSavings;
   },
 };
 
@@ -94,8 +126,28 @@ export const REDUNDANT_SEATS_RULE: AuditRule = {
   },
   recommendation: "Review seat allocation - you may have unused licenses",
   potentialSavings: (data: AuditFormData) => {
-    // Placeholder: Calculate based on excess seats
-    return 0;
+    // Calculate savings from reducing excess seats
+    const totalSeats = data.tools.reduce((sum, t) => sum + t.seats, 0);
+    const teamSizeMap: { [key: string]: number } = {
+      "1-5": 5,
+      "6-20": 20,
+      "21-50": 50,
+      "51-100": 100,
+      "100+": 150,
+    };
+
+    if (!data.teamSize || !teamSizeMap[data.teamSize]) return 0;
+    const maxTeamSize = teamSizeMap[data.teamSize];
+    const excessSeats = totalSeats - maxTeamSize;
+
+    if (excessSeats <= 0) return 0;
+
+    // Calculate average cost per seat across all tools
+    const totalSpend = data.tools.reduce((sum, t) => sum + t.spend, 0);
+    const costPerSeat = totalSeats > 0 ? totalSpend / totalSeats : 0;
+
+    // Savings from removing excess seats
+    return excessSeats * costPerSeat;
   },
 };
 
@@ -115,6 +167,7 @@ export const HIGH_SINGLE_TOOL_SPEND_RULE: AuditRule = {
   recommendation: "Consider diversifying your AI stack for better coverage",
   potentialSavings: (data: AuditFormData) => {
     // Placeholder: Calculate based on diversification
+    // For now, no direct savings from diversification alone
     return 0;
   },
 };
@@ -135,6 +188,7 @@ export const MIXED_USAGE_LIMITED_TOOLS_RULE: AuditRule = {
   recommendation: "Mixed usage teams may benefit from additional specialized tools",
   potentialSavings: (data: AuditFormData) => {
     // Placeholder: Calculate based on tool gaps
+    // No direct savings from adding tools
     return 0;
   },
 };
@@ -156,6 +210,7 @@ export const DEVELOPMENT_WITHOUT_COPILOT_RULE: AuditRule = {
   recommendation: "Development teams often benefit from GitHub Copilot for code completion",
   potentialSavings: (data: AuditFormData) => {
     // Placeholder: Calculate based on Copilot pricing
+    // No direct savings from adding Copilot
     return 0;
   },
 };

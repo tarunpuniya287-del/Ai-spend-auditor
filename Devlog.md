@@ -16,6 +16,31 @@ Start building the dynamic audit form, structure pricing data for supported AI t
 
 
 
+## Day 3 — 2026-05-08
+
+**Hours worked:** 4
+
+**What I did:**
+Implemented the core audit generation workflow for the AI Spend Auditor project. Created the pricing data layer and started building the deterministic audit rule engine for detecting overspending patterns, redundant seat allocation, overlapping AI subscriptions, and optimization opportunities.
+
+Added savings calculation logic to estimate projected monthly and annual savings based on audit findings. Built the audit generation pipeline that transforms form input into structured audit results including findings, recommendations, insights, summary metrics, and optimization calculations.
+
+Refactored the application from a single-page workflow into a cleaner multi-page structure. The landing page now focuses on collecting audit input, while generated reports open on a dedicated dynamic audit results page using `/audit/[id]`.
+
+Implemented local audit persistence and structured JSON report export functionality for generated audits. Improved overall application architecture by separating pricing logic, audit rules, calculations, and report generation into modular utility files.
+
+**What I learned:**
+I learned that building believable audit logic is more important than adding excessive frontend polish. Structuring the recommendation system in a deterministic and explainable way significantly improves the realism and maintainability of the product.
+
+**Blockers / what I'm stuck on:**
+The current audit intelligence is still relatively basic, and I need to improve the sophistication of recommendation logic without making the system overly complex or difficult to maintain. Backend persistence and database integration are also still pending.
+
+**Plan for tomorrow:**
+Start integrating Supabase for persistent audit storage, create database tables for audits and leads, and move generated audit reports from local-only storage to backend-backed persistence.
+
+
+
+
 
 
 
