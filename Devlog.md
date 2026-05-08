@@ -13,3 +13,28 @@ Still deciding how detailed the audit recommendation engine should be without ov
 
 **Plan for tomorrow:**
 Start building the dynamic audit form, structure pricing data for supported AI tools, and begin implementing the rule-based audit engine.
+
+
+
+
+
+
+## Day 2 — 2026-05-07
+
+**Hours worked:** 3
+
+**What I did:**
+Continued improving the AI Spend Auditor landing page and transformed the static audit form into a more realistic interactive workflow. Implemented dynamic tool management, including the ability to add and remove AI tools from the audit form. Added live audit summary calculations for total monthly spend, total seats, and number of tools configured. Improved spacing, readability, and overall UX of the audit section to make the product feel more like a real operational audit platform instead of a static demo page.
+
+I also added contextual “early insights” messaging to simulate lightweight audit intelligence before final report generation. Improved trust and persistence messaging by clarifying that audit data is stored locally until submission.
+
+Additionally, I started preparing the internal architecture for the pricing engine and audit rule system that will power the recommendation logic in upcoming development phases.
+
+**What I learned:**
+I realized that making the product feel believable is not only about visual polish but also about creating responsive interactions and meaningful financial feedback. Small UX improvements like live calculations and contextual insights significantly improve perceived product intelligence.
+
+**Blockers / what I'm stuck on:**
+I still need to carefully design the audit recommendation engine so that the logic remains realistic, explainable, and maintainable without becoming overly complex.
+
+**Plan for tomorrow:**
+Start implementing the pricing data layer, audit recommendation rules, and the core audit generation logic that will produce actionable optimization suggestions and savings calculations.
