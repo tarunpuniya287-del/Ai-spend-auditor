@@ -237,6 +237,132 @@ export const FREE_TIER_UNDERUTILIZATION_RULE: AuditRule = {
 };
 
 /**
+ * Rule: Unusually High AI Spend Relative to Team Size
+ * Detects when per-person AI spend is significantly higher than typical
+ */
+export const HIGH_SPEND_PER_PERSON_RULE: AuditRule = {
+  id: "high-spend-per-person",
+  name: "High Spend Per Person",
+  category: "optimization",
+  severity: "warning",
+  description: "AI spend per team member is unusually high",
+  evaluate: (data: AuditFormData) => {
+    const totalSpend = data.tools.reduce((sum, t) => sum + t.spend, 0);
+    const teamSizeMap: { [key: string]: number } = {
+      "1-5": 3,
+      "6-20": 13,
+      "21-50": 35,
+      "51-100": 75,
+      "100+": 150,
+    };
+
+    if (!data.teamSize || !teamSizeMap[data.teamSize]) return false;
+    const estimatedTeamSize = teamSizeMap[data.teamSize];
+    const spendPerPerson = totalSpend / estimatedTeamSize;
+
+    // Flag if spend per person exceeds $100/month
+    return spendPerPerson > 100;
+  },
+  recommendation: "Review your AI tool spending - it's higher than typical for your team size",
+  potentialSavings: (data: AuditFormData) => {
+    const totalSpend = data.tools.reduce((sum, t) => sum + t.spend, 0);
+    const teamSizeMap: { [key: string]: number } = {
+      "1-5": 3,
+      "6-20": 13,
+      "21-50": 35,
+      "51-100": 75,
+      "100+": 150,
+    };
+
+    if (!data.teamSize || !teamSizeMap[data.teamSize]) return 0;
+    const estimatedTeamSize = teamSizeMap[data.teamSize];
+    const spendPerPerson = totalSpend / estimatedTeamSize;
+
+    // Suggest reducing to $75/person as a reasonable target
+    const targetSpend = estimatedTeamSize * 75;
+    const potentialSavings = Math.max(0, totalSpend - targetSpend);
+
+    return potentialSavings;
+  },
+};
+
+/**
+ * Rule: Overlapping Coding Assistants
+ * Detects when multiple coding assistant tools are subscribed
+ */
+export const OVERLAPPING_CODING_ASSISTANTS_RULE: AuditRule = {
+  id: "overlapping-coding-assistants",
+  name: "Overlapping Coding Assistants",
+  category: "redundancy",
+  severity: "warning",
+  description: "Multiple coding assistant subscriptions detected",
+  evaluate: (data: AuditFormData) => {
+    const codingTools = ["GitHub Copilot", "Codeium", "Tabnine", "Amazon CodeWhisperer"];
+    const userCodingTools = data.tools.filter((t) =>
+      codingTools.some((ct) => t.tool.toLowerCase().includes(ct.toLowerCase()))
+    );
+    return userCodingTools.length > 1;
+  },
+  recommendation: "Consider consolidating to a single coding assistant - most teams only need one",
+  potentialSavings: (data: AuditFormData) => {
+    const codingTools = ["GitHub Copilot", "Codeium", "Tabnine", "Amazon CodeWhisperer"];
+    const userCodingTools = data.tools.filter((t) =>
+      codingTools.some((ct) => t.tool.toLowerCase().includes(ct.toLowerCase()))
+    );
+
+    if (userCodingTools.length <= 1) return 0;
+
+    // Keep the most expensive one (likely the best), eliminate others
+    const sorted = userCodingTools.sort((a, b) => b.spend - a.spend);
+    const savingsFromConsolidation = sorted.slice(1).reduce((sum, t) => sum + t.spend, 0);
+
+    return savingsFromConsolidation;
+  },
+};
+
+/**
+ * Rule: Small Team with Enterprise Seats
+ * Detects when seat allocation is excessive for team size
+ */
+export const SMALL_TEAM_ENTERPRISE_SEATS_RULE: AuditRule = {
+  id: "small-team-enterprise-seats",
+  name: "Small Team Enterprise Seats",
+  category: "oversizing",
+  severity: "critical",
+  description: "Enterprise seat allocation for small team",
+  evaluate: (data: AuditFormData) => {
+    const totalSeats = data.tools.reduce((sum, t) => sum + t.seats, 0);
+    const isSmallTeam = data.teamSize && ["1-5", "6-20"].includes(data.teamSize);
+    const hasExcessSeats = totalSeats > 50;
+
+    return !!(isSmallTeam && hasExcessSeats);
+  },
+  recommendation: "Reduce seat allocation to match your team size - you're paying for unused licenses",
+  potentialSavings: (data: AuditFormData) => {
+    const totalSeats = data.tools.reduce((sum, t) => sum + t.seats, 0);
+    const teamSizeMap: { [key: string]: number } = {
+      "1-5": 5,
+      "6-20": 20,
+      "21-50": 50,
+      "51-100": 100,
+      "100+": 150,
+    };
+
+    if (!data.teamSize || !teamSizeMap[data.teamSize]) return 0;
+    const maxTeamSize = teamSizeMap[data.teamSize];
+    const excessSeats = Math.max(0, totalSeats - maxTeamSize);
+
+    if (excessSeats === 0) return 0;
+
+    // Calculate average cost per seat
+    const totalSpend = data.tools.reduce((sum, t) => sum + t.spend, 0);
+    const costPerSeat = totalSeats > 0 ? totalSpend / totalSeats : 0;
+
+    return excessSeats * costPerSeat;
+  },
+};
+
+/**
  * All audit rules
  */
 export const ALL_AUDIT_RULES: AuditRule[] = [
@@ -247,6 +373,9 @@ export const ALL_AUDIT_RULES: AuditRule[] = [
   MIXED_USAGE_LIMITED_TOOLS_RULE,
   DEVELOPMENT_WITHOUT_COPILOT_RULE,
   FREE_TIER_UNDERUTILIZATION_RULE,
+  HIGH_SPEND_PER_PERSON_RULE,
+  OVERLAPPING_CODING_ASSISTANTS_RULE,
+  SMALL_TEAM_ENTERPRISE_SEATS_RULE,
 ];
 
 /**

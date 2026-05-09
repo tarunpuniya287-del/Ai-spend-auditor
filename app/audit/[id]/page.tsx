@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import AuditResults from "@/components/AuditResults";
 import { AuditReport } from "@/lib/audit/generate-audit";
 import { getAuditReport } from "@/lib/storage";
+import { getAuditReportFromDatabase } from "@/lib/mongodb";
 
 export default function AuditPage() {
   const params = useParams();
@@ -16,6 +17,7 @@ export default function AuditPage() {
   const [report, setReport] = useState<AuditReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [source, setSource] = useState<"database" | "localStorage" | null>(null);
 
   useEffect(() => {
     if (!auditId) {
@@ -24,20 +26,39 @@ export default function AuditPage() {
       return;
     }
 
-    try {
-      const storedReport = getAuditReport(auditId);
-      if (storedReport) {
-        setReport(storedReport);
-      } else {
-        setError("Audit report not found. It may have been cleared from your browser.");
+    const loadAuditReport = async () => {
+      try {
+        // First, try to fetch from MongoDB database
+        let loadedReport = await getAuditReportFromDatabase(auditId);
+        
+        if (loadedReport) {
+          setReport(loadedReport);
+          setSource("database");
+          setIsLoading(false);
+          return;
+        }
+
+        // Fallback to localStorage if database fetch fails or returns nothing
+        const localReport = getAuditReport(auditId);
+        if (localReport) {
+          setReport(localReport);
+          setSource("localStorage");
+          setIsLoading(false);
+          return;
+        }
+
+        // Neither source has the report
+        setError("Audit report not found. It may have been cleared or the link is invalid.");
+        setIsLoading(false);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to load audit report";
+        setError(errorMessage);
+        console.error("Error loading audit report:", err);
+        setIsLoading(false);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load audit report";
-      setError(errorMessage);
-      console.error("Error loading audit report:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    loadAuditReport();
   }, [auditId]);
 
   const handleReset = () => {
@@ -93,6 +114,15 @@ export default function AuditPage() {
     <div className="min-h-screen bg-background text-on-surface">
       <Navigation />
       <main className="pt-16 pb-32">
+        {source === "localStorage" && (
+          <div className="bg-yellow-50 border-b border-yellow-200 px-gutter py-md">
+            <div className="max-w-container-max mx-auto">
+              <p className="text-xs text-yellow-800">
+                ℹ️ This audit is stored locally in your browser. Create an account to save it permanently.
+              </p>
+            </div>
+          </div>
+        )}
         <section className="py-32 px-gutter bg-surface-container-low border-b border-outline-variant/20">
           <div className="max-w-container-max mx-auto">
             <AuditResults report={report} onReset={handleReset} />

@@ -84,7 +84,7 @@ export default function AuditForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsGenerating(true);
@@ -101,8 +101,16 @@ export default function AuditForm() {
       // Generate audit report
       const report = generateAudit(formData);
       
-      // Save report to localStorage
+      // Save report to localStorage (always)
       saveAuditReport(report);
+      
+      // Try to save to MongoDB (non-blocking)
+      try {
+        const { saveAuditReportToDatabase } = await import("@/lib/mongodb");
+        await saveAuditReportToDatabase(report);
+      } catch (dbErr) {
+        console.warn("Failed to save to database, but continuing with local storage:", dbErr);
+      }
       
       // Redirect to results page
       router.push(`/audit/${report.id}`);
