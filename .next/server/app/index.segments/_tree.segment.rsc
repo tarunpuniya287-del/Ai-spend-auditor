@@ -1,0 +1,9 @@
+:HL["/_next/static/chunks/0dfrtxvqfeomu.css","style"]
+:HL["/_next/static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap","style"]
+:HL["https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg","image"]
+:HL["https://www.anthropic.com/favicon.ico","image"]
+:HL["https://cursor.sh/favicon.ico","image"]
+:HL["https://github.com/favicon.ico","image"]
+:HL["https://www.google.com/favicon.ico","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"moudv7vn6na07Q7wU_lcF"}

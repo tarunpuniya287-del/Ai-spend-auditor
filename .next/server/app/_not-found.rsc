@@ -1,0 +1,118 @@
+1:"$Sreact.fragment"
+9:I[68027,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"default",1]
+:HL["/_next/static/chunks/0dfrtxvqfeomu.css","style"]
+:HL["https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap","style"]
+2:T1212,
+              tailwind.config = {
+                darkMode: "class",
+                theme: {
+                  extend: {
+                    colors: {
+                      primary: "#004ac6",
+                      "surface-container": "#ededf9",
+                      "inverse-surface": "#2e3039",
+                      "on-surface-variant": "#434655",
+                      "surface-dim": "#d9d9e5",
+                      "surface-tint": "#0053db",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-background": "#191b23",
+                      "primary-container": "#2563eb",
+                      "on-secondary-container": "#5c6274",
+                      "surface-container-high": "#e7e7f3",
+                      "on-tertiary-container": "#ffede6",
+                      "on-primary-container": "#eeefff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "tertiary-container": "#bc4800",
+                      "inverse-on-surface": "#f0f0fb",
+                      outline: "#737686",
+                      background: "#faf8ff",
+                      "secondary-fixed": "#dce2f7",
+                      "inverse-primary": "#b4c5ff",
+                      "secondary-container": "#d9dff5",
+                      "surface-container-low": "#f3f3fe",
+                      "outline-variant": "#c3c6d7",
+                      surface: "#faf8ff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "error-container": "#ffdad6",
+                      error: "#ba1a1a",
+                      "surface-bright": "#faf8ff",
+                      "on-primary-fixed": "#00174b",
+                      "on-secondary-fixed-variant": "#404758",
+                      "on-secondary-fixed": "#141b2b",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-error": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed-dim": "#c0c6db",
+                      "surface-variant": "#e1e2ed",
+                      "on-surface": "#191b23",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#ffdbcd",
+                      "primary-fixed": "#dbe1ff",
+                      tertiary: "#943700",
+                      secondary: "#575e70",
+                      "on-primary": "#ffffff",
+                    },
+                    borderRadius: {
+                      DEFAULT: "0.25rem",
+                      lg: "0.5rem",
+                      xl: "0.75rem",
+                      full: "9999px",
+                    },
+                    spacing: {
+                      xs: "4px",
+                      "3xl": "64px",
+                      md: "16px",
+                      lg: "24px",
+                      xl: "32px",
+                      gutter: "24px",
+                      sm: "8px",
+                      unit: "4px",
+                      "container-max": "1280px",
+                      "2xl": "48px",
+                    },
+                    fontFamily: {
+                      h1: ["Inter"],
+                      h3: ["Inter"],
+                      "body-base": ["Inter"],
+                      display: ["Inter"],
+                      "body-sm": ["Inter"],
+                      code: ["Inter"],
+                      h2: ["Inter"],
+                      "label-caps": ["Inter"],
+                    },
+                    fontSize: {
+                      h1: ["30px", { lineHeight: "1.3", letterSpacing: "-0.02em", fontWeight: "600" }],
+                      h3: ["18px", { lineHeight: "1.4", letterSpacing: "0em", fontWeight: "600" }],
+                      "body-base": ["16px", { lineHeight: "1.5", letterSpacing: "0.01em", fontWeight: "400" }],
+                      display: ["36px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" }],
+                      "body-sm": ["14px", { lineHeight: "1.5", letterSpacing: "0.01em", fontWeight: "400" }],
+                      code: ["14px", { lineHeight: "1.4", letterSpacing: "0em", fontWeight: "450" }],
+                      h2: ["24px", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }],
+                      "label-caps": ["12px", { lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "600" }],
+                    },
+                  },
+                },
+              };
+            0:{"P":null,"c":["","_not-found"],"q":"","i":false,"f":[[["",{"children":["/_not-found",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",16],[["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0dfrtxvqfeomu.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/_next/static/chunks/0dbhjjzl8qfwv.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"inter_c90aabcd-module__Q2KVYa__variable light","children":[["$","head",null,{"children":[["$","meta",null,{"charSet":"utf-8"}],["$","meta",null,{"name":"viewport","content":"width=device-width, initial-scale=1.0"}],["$","link",null,{"href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap","rel":"stylesheet"}],["$","script",null,{"src":"https://cdn.tailwindcss.com?plugins=forms,container-queries"}],["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$2"}}],"$L3"]}],"$L4"]}]]}],{"children":["$L5",{"children":["$L6",{},null,false,null]},null,false,"$@7"]},null,false,null],"$L8",false]],"m":"$undefined","G":["$9",["$La"]],"S":true,"h":null,"s":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"moudv7vn6na07Q7wU_lcF"}
+b:I[39756,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"default"]
+c:I[37457,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"default"]
+d:I[97367,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"OutletBoundary"]
+e:"$Sreact.suspense"
+11:I[97367,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"ViewportBoundary"]
+13:I[97367,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"MetadataBoundary"]
+3:["$","style",null,{"dangerouslySetInnerHTML":{"__html":"\n              .material-symbols-outlined {\n                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;\n              }\n              body {\n                font-family: 'Inter', sans-serif;\n                background-color: #faf8ff;\n                -webkit-font-smoothing: antialiased;\n              }\n            "}}]
+4:["$","body",null,{"className":"bg-background text-on-surface min-h-full flex flex-col","children":["$","$Lb",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]
+5:["$","$1","c",{"children":[null,["$","$Lb",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}]
+6:["$","$1","c",{"children":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":"$4:props:children:props:notFound:0:1:props:style","children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":"$4:props:children:props:notFound:0:1:props:children:props:children:1:props:style","children":404}],["$","div",null,{"style":"$4:props:children:props:notFound:0:1:props:children:props:children:2:props:style","children":["$","h2",null,{"style":"$4:props:children:props:notFound:0:1:props:children:props:children:2:props:children:props:style","children":"This page could not be found."}]}]]}]}]],null,["$","$Ld",null,{"children":["$","$e",null,{"name":"Next.MetadataOutlet","children":"$@f"}]}]]}]
+10:[]
+7:"$W10"
+8:["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L11",null,{"children":"$L12"}],["$","div",null,{"hidden":true,"children":["$","$L13",null,{"children":["$","$e",null,{"name":"Next.Metadata","children":"$L14"}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}]
+a:["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0dfrtxvqfeomu.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]
+12:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+15:I[27201,["/_next/static/chunks/0dbhjjzl8qfwv.js"],"IconMark"]
+f:null
+14:[["$","title","0",{"children":"AI Spend Auditor - High-Stakes Financial Optimization"}],["$","meta","1",{"name":"description","content":"Analyze your ChatGPT, Claude, Cursor, Copilot, and Gemini costs to uncover unnecessary AI spend and optimization opportunities."}],["$","link","2",{"rel":"icon","href":"/favicon.ico?favicon.0x3dzn~oxb6tn.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L15","3",{}]]
